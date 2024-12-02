@@ -7,6 +7,24 @@ x-logging: &logging
       tag: '{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}'
 
 services:
+  merlin-state-db-init:
+    restart: "no"
+    build:
+      context: ./init
+      dockerfile: Dockerfile
+    image: init:merlin-state-db
+    environment:
+      - NETWORK=${NETWORK}
+    depends_on:
+      cdk-validium-state-db:
+        condition: service_healthy
+      cdk-validium-pool-db:
+        condition: service_healthy
+    pull_policy: never
+    volumes:
+      - cdk_validium_state_db:/var/lib/merlin
+      - /etc/localtime:/etc/localtime:ro
+
   cdk-validium-state-db:
     restart: unless-stopped
     image: postgres:${POSTGRES_DOCKER_TAG}
@@ -74,6 +92,8 @@ services:
     image: merlinadmin/zkprover:${PROVER_DOCKER_TAG}
     restart: unless-stopped
     depends_on:
+      merlin-state-db-init:
+        condition: service_completed_successfully
       cdk-validium-state-db:
         condition: service_healthy
     ports:
@@ -89,6 +109,8 @@ services:
     image: merlinadmin/zkevm-node:${NODE_DOCKER_TAG}
     restart: unless-stopped
     depends_on:
+      merlin-state-db-init:
+        condition: service_completed_successfully
       cdk-validium-state-db:
         condition: service_healthy
       cdk-validium-prover:
@@ -111,6 +133,8 @@ services:
     image: merlinadmin/zkevm-node:${NODE_DOCKER_TAG}
     restart: unless-stopped
     depends_on:
+      merlin-state-db-init:
+        condition: service_completed_successfully
       cdk-validium-state-db:
         condition: service_healthy
       cdk-validium-pool-db:

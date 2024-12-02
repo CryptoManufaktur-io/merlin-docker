@@ -1,0 +1,23 @@
+[Log]
+Environment = "TO_REPLACE_HERE"
+Level = "debug"
+Outputs = ["stderr"]
+
+[State]
+[State.DB]
+User = "state_user"
+Password = "state_password"
+Name = "state_db"
+Host = "cdk-validium-state-db"
+Port = "5432"
+EnableLog = false
+MaxConns = 200
+
+[HashDB]
+User = "prover_user"
+Password = "prover_password"
+Name = "prover_db"
+Host = "cdk-validium-state-db"
+Port = "5432"
+EnableLog = false
+MaxConns = 200
