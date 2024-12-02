@@ -32,6 +32,10 @@ services:
       - POSTGRES_USER=state_user
       - POSTGRES_PASSWORD=state_password
       - POSTGRES_DB=state_db
+    networks:
+      default:
+        aliases:
+          - merlin-state-db
     volumes:
       - ./merlin/init_prover_db.sql:/docker-entrypoint-initdb.d/init.sql
       - cdk_validium_state_db:/var/lib/postgresql/data
@@ -73,6 +77,10 @@ services:
       - POSTGRES_USER=pool_user
       - POSTGRES_PASSWORD=pool_password
       - POSTGRES_DB=pool_db
+    networks:
+      default:
+        aliases:
+          - merlin-pool-db
     volumes:
       - cdk_validium_pool_db:/var/lib/postgresql/data
     command:
