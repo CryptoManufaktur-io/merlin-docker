@@ -1,0 +1,155 @@
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+      tag: '{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}'
+
+services:
+  cdk-validium-state-db:
+    restart: unless-stopped
+    image: postgres:${POSTGRES_DOCKER_TAG}
+    environment:
+      - POSTGRES_USER=state_user
+      - POSTGRES_PASSWORD=state_password
+      - POSTGRES_DB=state_db
+    volumes:
+      - ./merlin/init_prover_db.sql:/docker-entrypoint-initdb.d/init.sql
+      - cdk_validium_state_db:/var/lib/postgresql/data
+    command:
+      - "postgres"
+      - "-N"
+      - "500"
+      - "-c"
+      - "max_connections=20000"
+      - "-c"
+      - "shared_buffers=16GB"
+      - "-c"
+      - "work_mem=32MB"
+      - "-c"
+      - "wal_buffers=8MB"
+      - "-c"
+      - "effective_cache_size=16GB"
+      - "-c"
+      - "maintenance_work_mem=128MB"
+      - "-c"
+      - "checkpoint_completion_target=0.7"
+      - "-c"
+      - "max_wal_size=4GB"
+      - "-c"
+      - "min_wal_size=200MB"
+      - "-c"
+      - "max_worker_processes=16"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    <<: *logging
+  
+  cdk-validium-pool-db:
+    restart: unless-stopped
+    image: postgres:${POSTGRES_DOCKER_TAG}
+    environment:
+      - POSTGRES_USER=pool_user
+      - POSTGRES_PASSWORD=pool_password
+      - POSTGRES_DB=pool_db
+    volumes:
+      - cdk_validium_pool_db:/var/lib/postgresql/data
+    command:
+      - "postgres"
+      - "-N"
+      - "500"
+      - "-c"
+      - "max_connections=10000"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    <<: *logging
+
+  cdk-validium-prover:
+    image: merlinadmin/zkprover:${PROVER_DOCKER_TAG}
+    restart: unless-stopped
+    depends_on:
+      cdk-validium-state-db:
+        condition: service_healthy
+    ports:
+      - 50061:50061 # MT
+      - 50071:50071 # Executor
+    volumes:
+      - ./merlin/prover.config.json:/usr/src/app/config.json
+    command: >
+      zkProver -c /usr/src/app/config.json
+    <<: *logging
+
+  cdk-validium-sync:
+    image: merlinadmin/zkevm-node:${NODE_DOCKER_TAG}
+    restart: unless-stopped
+    depends_on:
+      cdk-validium-state-db:
+        condition: service_healthy
+      cdk-validium-prover:
+        condition: service_started
+    volumes:
+      - ./merlin/${NETWORK}/node.config.toml:/app/config.toml
+      - ./merlin/${NETWORK}/genesis.json:/app/genesis.json
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components synchronizer"
+    labels:
+      - metrics.scrape=true
+      - metrics.port=9091
+      - metrics.path=/metrics
+      - metrics.network=merlin-${NETWORK}
+    <<: *logging
+
+  cdk-validium-json-rpc:
+    image: merlinadmin/zkevm-node:${NODE_DOCKER_TAG}
+    restart: unless-stopped
+    depends_on:
+      cdk-validium-state-db:
+        condition: service_healthy
+      cdk-validium-pool-db:
+        condition: service_healthy
+      cdk-validium-sync:
+        condition: service_started
+    volumes:
+      - ./merlin/${NETWORK}/node.config.toml:/app/config.toml
+      - ./merlin/${NETWORK}/genesis.json:/app/genesis.json
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components rpc --http.api eth,net,debug,zkevm,txpool,web3"
+    labels:
+      - metrics.scrape=true
+      - metrics.port=9091
+      - metrics.path=/metrics
+      - metrics.network=merlin-${NETWORK}
+      - traefik.enable=true
+      - traefik.http.routers.${RPC_HOST}.service=${RPC_HOST}
+      - traefik.http.routers.${RPC_HOST}.entrypoints=websecure
+      - traefik.http.routers.${RPC_HOST}.rule=Host(`${RPC_HOST}.${DOMAIN}`)
+      - traefik.http.routers.${RPC_HOST}.tls.certresolver=letsencrypt
+      - traefik.http.routers.${RPC_HOST}lb.service=${RPC_HOST}
+      - traefik.http.routers.${RPC_HOST}lb.entrypoints=websecure
+      - traefik.http.routers.${RPC_HOST}lb.rule=Host(`${RPC_LB}.${DOMAIN}`)
+      - traefik.http.routers.${RPC_HOST}lb.tls.certresolver=letsencrypt
+      - traefik.http.services.${RPC_HOST}.loadbalancer.server.port=${RPC_PORT}
+      - traefik.http.routers.${WS_HOST}.service=${WS_HOST}
+      - traefik.http.routers.${WS_HOST}.entrypoints=websecure
+      - traefik.http.routers.${WS_HOST}.rule=Host(`${WS_HOST}.${DOMAIN}`)
+      - traefik.http.routers.${WS_HOST}.tls.certresolver=letsencrypt
+      - traefik.http.routers.${WS_HOST}lb.service=${WS_HOST}
+      - traefik.http.routers.${WS_HOST}lb.entrypoints=websecure
+      - traefik.http.routers.${WS_HOST}lb.rule=Host(`${WS_LB}.${DOMAIN}`)
+      - traefik.http.routers.${WS_HOST}lb.tls.certresolver=letsencrypt
+      - traefik.http.services.${WS_HOST}.loadbalancer.server.port=${WS_PORT}    
+    <<: *logging
+
+volumes:
+  cdk_validium_state_db:
+  cdk_validium_pool_db:

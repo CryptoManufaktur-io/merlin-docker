@@ -1,0 +1,8 @@
+# To be used in conjunction with merlin.yml: To expose Postgres ports for troubleshooting
+services:
+  cdk-validium-state-db:
+    ports:
+      - ${SHARE_IP:-}:5432:5432/tcp
+  cdk-validium-pool-db:
+    ports:
+      - ${SHARE_IP:-}:5433:5432/tcp

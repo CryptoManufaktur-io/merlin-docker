@@ -1,0 +1,125 @@
+IsTrustedSequencer = false
+
+[Log]
+Environment = "production"
+Level = "info"
+Outputs = ["stderr"]
+
+[Synchronizer]
+SyncInterval = "1s"
+SyncChunkSize = 300
+SyncOnlyTrusted = false
+TrustedSequencerURL = "https://rpc.merlinchain.io"
+L1SynchronizationMode = "parallel"
+UpgradeEtrogBatchNumber = 1642245
+
+[Synchronizer.L1ParallelSynchronization]
+MaxClients = 10
+MaxPendingNoProcessedBlocks = 25
+RequestLastBlockPeriod = "5s"
+RequestLastBlockTimeout = "5s"
+RequestLastBlockMaxRetries = 3
+StatisticsPeriod = "5m"
+TimeoutMainLoop = "5m"
+RollupInfoRetriesSpacing = "5s"
+FallbackToSequentialModeOnSynchronized = false
+
+[Synchronizer.L1ParallelSynchronization.PerformanceWarning]
+AceptableInacctivityTime = "5s"
+ApplyAfterNumRollupReceived = 10
+
+[Etherman]
+URL = "http://18.142.49.94:8545"
+ForkIDChunkSize = 20000
+MultiGasProvider = false
+
+[RPC]
+Host = "0.0.0.0"
+Port = 8123
+ReadTimeout = "360s"
+WriteTimeout = "360s"
+MaxRequestsPerIPAndSecond = 10000
+SequencerNodeURI = "https://rpc.merlinchain.io"
+EnableL2SuggestedGasPricePolling = false
+TraceBatchUseHTTPS = true
+BatchRequestsEnabled = true
+BatchRequestsLimit = 10000
+
+[RPC.WebSockets]
+Enabled = true
+Host = "0.0.0.0"
+Port = 8133
+
+[State]
+[State.DB]
+User = "state_user"
+Password = "state_password"
+Name = "state_db"
+Host = "merlin-state-db"
+Port = "5432"
+EnableLog = false
+MaxConns = 800
+
+[State.Batch]
+[State.Batch.Constraints]
+MaxTxsPerBatch = 300
+MaxBatchBytesSize = 120000
+MaxCumulativeGasUsed = 1125899906842624
+MaxKeccakHashes = 2145
+MaxPoseidonHashes = 252357
+MaxPoseidonPaddings = 135191
+MaxMemAligns = 236585
+MaxArithmetics = 236585
+MaxBinaries = 473170
+MaxSteps = 7570538
+MaxSHA256Hashes = 1596
+
+[Pool]
+FreeClaimGasLimit = 1500000
+IntervalToRefreshBlockedAddresses = "5m"
+IntervalToRefreshGasPrices = "5s"
+MaxTxBytesSize = 100132
+MaxTxDataBytesSize = 100000
+DefaultMinGasPriceAllowed = 6000000
+MinAllowedGasPriceInterval = "5m"
+PollMinAllowedGasPriceInterval = "15s"
+AccountQueue = 100
+GlobalQueue = 10240
+
+[Pool.EffectiveGasPrice]
+Enabled = false
+L1GasPriceFactor = 0.25
+ByteGasCost = 16
+ZeroByteGasCost = 4
+NetProfit = 1
+BreakEvenFactor = 1.1
+FinalDeviationPct = 10
+EthTransferGasPrice = 0
+EthTransferL1GasPriceFactor = 0
+L2GasPriceSuggesterFactor = 0.5
+
+[Pool.DB]
+User = "pool_user"
+Password = "pool_password"
+Name = "pool_db"
+Host = "merlin-pool-db"
+Port = "5432"
+EnableLog = false
+MaxConns = 800
+
+[Metrics]
+Host = "0.0.0.0"
+Port = 9091
+Enabled = true
+ProfilingHost = "0.0.0.0"
+ProfilingPort = 6060
+ProfilingEnabled = true
+
+[MTClient]
+URI = "cdk-validium-prover:50061"
+
+[Executor]
+URI = "cdk-validium-prover:50071"
+MaxResourceExhaustedAttempts = 5
+WaitOnResourceExhaustion = "1s"
+MaxGRPCMessageSize = 300000000
