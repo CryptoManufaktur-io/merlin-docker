@@ -22,7 +22,7 @@ services:
         condition: service_healthy
     pull_policy: never
     volumes:
-      - cdk_validium_state_db:/var/lib/merlin
+      - init_data:/merlin
       - /etc/localtime:/etc/localtime:ro
 
   cdk-validium-state-db:
@@ -175,5 +175,6 @@ services:
     <<: *logging
 
 volumes:
+  init_data:
   cdk_validium_state_db:
   cdk_validium_pool_db:
