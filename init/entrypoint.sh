@@ -21,8 +21,8 @@ else
     sed -i 's/TO_REPLACE_HERE/development/' ./snapshot_restore.toml
 fi
 
-wget -c -O state_db.sql.tar.gz  https://rpc-snapshot.merlinchain.io/${snapshot_prefix}state_db.sql.tar.gz --progress=dot:giga
-wget -c -O prover_db.sql.tar.gz https://rpc-snapshot.merlinchain.io/${snapshot_prefix}prover_db.sql.tar.gz --progress=dot:giga
+wget -c -O state_db.sql.tar.gz  https://rpc-snapshot.merlinchain.io/${snapshot_prefix}state_db.sql.tar.gz --progress=dot
+wget -c -O prover_db.sql.tar.gz https://rpc-snapshot.merlinchain.io/${snapshot_prefix}prover_db.sql.tar.gz --progress=dot
 
 ./build restore --cfg ./snapshot_restore.toml -is ./state_db.sql.tar.gz -ih ./prover_db.sql.tar.gz
 
