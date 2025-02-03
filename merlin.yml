@@ -97,7 +97,7 @@ services:
     <<: *logging
 
   cdk-validium-prover:
-    image: merlinadmin/zkprover:${PROVER_DOCKER_TAG}
+    image: hermeznetwork/zkevm-prover:${PROVER_DOCKER_TAG}
     restart: unless-stopped
     depends_on:
       merlin-state-db-init:

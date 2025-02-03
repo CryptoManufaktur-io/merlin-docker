@@ -8,7 +8,7 @@ Outputs = ["stderr"]
 [Synchronizer]
 SyncInterval = "1s"
 SyncChunkSize = 300
-SyncOnlyTrusted = false
+SyncOnlyTrusted = true
 TrustedSequencerURL = "https://rpc.merlinchain.io"
 L1SynchronizationMode = "parallel"
 UpgradeEtrogBatchNumber = 1642245
