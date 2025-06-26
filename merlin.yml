@@ -38,7 +38,7 @@ services:
       - ./merlin/${NETWORK}/dynamic-merlinmainnet-conf.json:/usr/src/app/dynamic-merlinmainnet-conf.json
       - erigon-data:/usr/src/app/data
     command: >
-      --http.vhosts=* --http.corsdomain=* --ws --config=/usr/src/app/config.yaml ${ERIGON_EXTRAS:-}
+      --http.vhosts=* --http.corsdomain=* --ws --ws.addr=0.0.0.0 --config=/usr/src/app/config.yaml ${ERIGON_EXTRAS:-}
     labels:
       - metrics.scrape=true
       - metrics.port=6060
