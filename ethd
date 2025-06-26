@@ -20,7 +20,7 @@ version() {
 # Client versions
 # Adjust for your clients and how to check their version
   case "${__value}" in
-    *cdk-erigon.yml* )
+    *merlin.yml* )
       echo "ERIGON_DOCKER_TAG: $(grep -E '^DOCKER_TAG=' .env | cut -d '=' -f2)"
       __docompose exec cdk-erigon cdk-erigon --version
       ;;
