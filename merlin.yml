@@ -28,6 +28,9 @@ services:
     restart: unless-stopped
     environment:
       - CDK_ERIGON_SEQUENCER=0
+    depends_on:
+      init:
+        condition: service_completed_successfully
     volumes:
       - ./merlin/${NETWORK}/config-rpc.yaml:/usr/src/app/config.yaml
       - ./merlin/${NETWORK}/dynamic-merlinmainnet-allocs.json:/usr/src/app/dynamic-merlinmainnet-allocs.json
