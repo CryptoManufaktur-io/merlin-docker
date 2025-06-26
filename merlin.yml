@@ -32,7 +32,7 @@ services:
       - ./merlin/${NETWORK}/dynamic-merlinmainnet-allocs.json:/usr/src/app/dynamic-merlinmainnet-allocs.json
       - ./merlin/${NETWORK}/dynamic-merlinmainnet-chainspec.json:/usr/src/app/dynamic-merlinmainnet-chainspec.json
       - ./merlin/${NETWORK}/dynamic-merlinmainnet-conf.json:/usr/src/app/dynamic-merlinmainnet-conf.json
-      - ./erigon_data:/usr/src/app/data
+      - erigon_data:/usr/src/app/data
     command: >
       --http.vhosts=* --http.corsdomain=* --ws --config=/usr/src/app/config.yaml
     labels:
