@@ -2,5 +2,6 @@
 services:
   cdk-erigon:
     ports:
-      - ${SHARE_IP:-}:${RPC_PORT}:${RPC_PORT}/tcp
-      - ${SHARE_IP:-}:${WS_PORT}:${WS_PORT}/tcp
+      - ${SHARE_IP:-}:${RPC_PORT}:8123/tcp
+      - ${SHARE_IP:-}:${WS_PORT}:8546/tcp
+      - ${SHARE_IP:-}:${STREAMER_PORT}:6990/tcp
