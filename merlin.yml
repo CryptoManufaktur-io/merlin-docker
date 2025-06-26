@@ -18,12 +18,13 @@ services:
     environment:
       - SNAPSHOT=${SNAPSHOT:-}
     volumes:
-      - erigon_data:/tmp/cdk-erigon
+      - erigon-data:/tmp/cdk-erigon
       - /etc/localtime:/etc/localtime:ro
 
   cdk-erigon:
     image: ${DOCKER_REPO}:${DOCKER_TAG}
     stop_grace_period: 600s
+    user: 1000:1000
     restart: unless-stopped
     environment:
       - CDK_ERIGON_SEQUENCER=0
@@ -32,9 +33,9 @@ services:
       - ./merlin/${NETWORK}/dynamic-merlinmainnet-allocs.json:/usr/src/app/dynamic-merlinmainnet-allocs.json
       - ./merlin/${NETWORK}/dynamic-merlinmainnet-chainspec.json:/usr/src/app/dynamic-merlinmainnet-chainspec.json
       - ./merlin/${NETWORK}/dynamic-merlinmainnet-conf.json:/usr/src/app/dynamic-merlinmainnet-conf.json
-      - erigon_data:/usr/src/app/data
+      - erigon-data:/usr/src/app/data
     command: >
-      --http.vhosts=* --http.corsdomain=* --ws --config=/usr/src/app/config.yaml
+      --http.vhosts=* --http.corsdomain=* --ws --config=/usr/src/app/config.yaml ${ERIGON_EXTRAS:-}
     labels:
       - metrics.scrape=true
       - metrics.port=6060
@@ -64,4 +65,4 @@ services:
     <<: *logging
 
 volumes:
-  erigon_data:
+  erigon-data:
