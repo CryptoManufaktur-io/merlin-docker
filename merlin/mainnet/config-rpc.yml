@@ -1,0 +1,55 @@
+datadir: /usr/src/app/data/
+chain: dynamic-merlinmainnet
+http: true
+private.api.addr: localhost:9098
+torrent.port: 42070
+authrpc.port: 8552
+zkevm.l2-chain-id: 4200
+zkevm.l2-sequencer-rpc-url: https://rpc.merlinchain.io
+zkevm.l2-datastreamer-url: mainnet-public-datastreamer.merlinchain.io:2080
+zkevm.l1-chain-id: 202401
+zkevm.l1-rpc-url: https://mainnet-l1.merlinchain.io
+
+zkevm.address-sequencer: "0x1B46c54ebE88F22cBFf2Bd4eB4545C47Bb2f3017"
+zkevm.address-zkevm: "0xBf4B031eb29fc34E2bCb4327F9304BED3600cc46"
+zkevm.address-admin: "0x6229976bf881Ee0e2499e8bDbDFd44E396b2aE7d"
+zkevm.address-rollup: "0x68DdbE6638d7514a9Ed0B9B2980B65970e532cdB"
+zkevm.address-ger-manager: "0x8b97BF5C42739C375a2db080813E9b4C9A4a2c9A"
+
+zkevm.l1-rollup-id: 1
+zkevm.l1-first-block: 85544
+zkevm.l1-block-range: 20000
+zkevm.l1-query-delay: 6000
+zkevm.l1-highest-block-type: latest
+zkevm.rpc-ratelimit: 300
+zkevm.datastream-version: 2
+zkevm.increment-tree-always: false
+zkevm.rebuild-tree-after: 500000
+
+log.console.verbosity: 3
+
+zkevm.executor-urls: ""
+zkevm.executor-strict: false
+zkevm.witness-full: true
+
+zkevm.sequencer-block-seal-time: "3s"
+zkevm.sequencer-batch-seal-time: "10s"
+
+zkevm.data-stream-host: "localhost"
+zkevm.data-stream-port: 6990
+zkevm.data-stream-writeTimeout: "100s"
+zkevm.default-gas-price: 1000000000
+zkevm.max-gas-price: 0
+zkevm.gas-price-factor: 0.000001
+externalcl: true
+http.api: [eth, debug, net, trace, web3, erigon, txpool, zkevm]
+http.addr: 0.0.0.0
+http.port: 8123
+http.vhosts: any
+http.corsdomain: any
+http.trace: false
+rpc.evmtimeout: "30s"
+ws: true
+db.read.concurrency: 20000
+txpool.globalslots: 100000
+networkid: 4200

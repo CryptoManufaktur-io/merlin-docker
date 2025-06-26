@@ -1,6 +1,6 @@
-# To be used in conjunction with node.yml or cdk-erigon.yml
+# To be used in conjunction with node.yml or merlin.yml
 services:
-  cdk-validium-json-rpc:
+  cdk-erigon:
     ports:
-      - ${SHARE_IP:-}:${RPC_PORT}:${RPC_PORT:-8123}/tcp
-      - ${SHARE_IP:-}:${WS_PORT}:${WS_PORT:-8133}/tcp
+      - ${SHARE_IP:-}:${RPC_PORT}:${RPC_PORT}/tcp
+      - ${SHARE_IP:-}:${WS_PORT}:${WS_PORT}/tcp

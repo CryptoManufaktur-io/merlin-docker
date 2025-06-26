@@ -1,8 +1,8 @@
-FROM golang:1.21-alpine
+FROM debian:bookworm-slim
 
-RUN apk update && apk add --no-cache postgresql15-client git gnupg wget
-COPY entrypoint.sh /usr/local/bin/
-COPY snapshot_restore.toml /tmp/snapshot_restore.toml
-COPY script.sql /tmp/script.sql
+COPY fetch-snapshot.sh /usr/local/bin/
 
-ENTRYPOINT [ "entrypoint.sh" ]
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y ca-certificates tzdata aria2 curl zstd lz4 \
+        && rm -rf /var/lib/apt/lists/*
+
+ENTRYPOINT [ "fetch-snapshot.sh" ]
