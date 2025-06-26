@@ -64,7 +64,7 @@ services:
       - traefik.http.routers.${WS_HOST}lb.entrypoints=websecure
       - traefik.http.routers.${WS_HOST}lb.rule=Host(`${WS_LB}.${DOMAIN}`)
       - traefik.http.routers.${WS_HOST}lb.tls.certresolver=letsencrypt
-      - traefik.http.services.${WS_HOST}.loadbalancer.server.port=8546   
+      - traefik.http.services.${WS_HOST}.loadbalancer.server.port=8124   
     <<: *logging
 
 volumes:

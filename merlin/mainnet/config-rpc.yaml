@@ -5,7 +5,7 @@ private.api.addr: localhost:9098
 torrent.port: 42070
 authrpc.port: 8552
 zkevm.l2-chain-id: 4200
-zkevm.l2-sequencer-rpc-url: https://rpc.merlinchain.io
+zkevm.l2-sequencer-rpc-url: http://mainnet-public-datastreamer.merlinchain.io:2081
 zkevm.l2-datastreamer-url: mainnet-public-datastreamer.merlinchain.io:2080
 zkevm.l1-chain-id: 202401
 zkevm.l1-rpc-url: https://mainnet-l1.merlinchain.io
@@ -50,6 +50,8 @@ http.corsdomain: any
 http.trace: false
 rpc.evmtimeout: "30s"
 ws: true
+ws.addr: 0.0.0.0
+ws.port: 8124
 db.read.concurrency: 20000
 txpool.globalslots: 100000
 networkid: 4200
