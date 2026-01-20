@@ -68,10 +68,19 @@ done
 load_env_file() {
   local file="$1"
   if [ -f "$file" ]; then
-    set -a
-    # shellcheck disable=SC1090
-    . "$file"
-    set +a
+    local line key value
+    while IFS= read -r line || [ -n "$line" ]; do
+      [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+      if [[ "$line" =~ ^[[:space:]]*([A-Za-z_][A-Za-z0-9_]*)=(.*)$ ]]; then
+        key="${BASH_REMATCH[1]}"
+        value="${BASH_REMATCH[2]}"
+        value="${value%\"}"
+        value="${value#\"}"
+        value="${value%\'}"
+        value="${value#\'}"
+        export "$key=$value"
+      fi
+    done < "$file"
   fi
 }
 
