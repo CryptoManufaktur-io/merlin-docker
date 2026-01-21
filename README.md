@@ -2,6 +2,8 @@
 
 Docker Compose for Merlin node.
 
+Explorer: https://scan.merlinchain.io/
+
 The `./merlind` script can be used as a quick-start:
 
 `./merlind install` brings in docker-ce, if you don't have Docker installed already.
@@ -10,7 +12,7 @@ The `./merlind` script can be used as a quick-start:
 
 `nano .env` and adjust variables as needed, particularly `NETWORK` and `L1_RPC`
 
-`./merlind up`
+`./merlind up` (or `docker compose up`)
 
 To update the software, run `./merlind update` and then `./merlind up`
 
