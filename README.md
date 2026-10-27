@@ -18,6 +18,8 @@ To update the software, run `./merlind update` and then `./merlind up`
 
 You can share the RPC/WS ports locally by adding `:rpc-shared.yml` to `COMPOSE_FILE` inside `.env`.
 
+The public RPC does not expose the `debug` namespace, since it allows rewinding the chain head and profiling. If you really need it, set `ERIGON_EXTRAS=--http.api=eth,debug,net,trace,web3,erigon,txpool,zkevm` in `.env`.
+
 If meant to be used with [central-proxy-docker](https://github.com/CryptoManufaktur-io/central-proxy-docker) for traefik
 and Prometheus remote write; use `:ext-network.yml` in `COMPOSE_FILE` inside `.env` in that case.
 
